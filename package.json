@@ -1,0 +1,43 @@
+{
+  "name": "admin",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "node ace test",
+    "db": "sqlite3 ~/code/Z/DB/auth/db.sqlite",
+    "site:new": "node ./.front/forgery.js",
+    "site:build": "cp app/pages/index.html dist/",
+    "site:deploy": "node ./.front/deploy.js",
+    "site:deploy:stage": "node ./.front/deploy.js target=stage",
+    "site:deploy:prod": "node ./.front/deploy.js target=prod",
+    "site:deploy:rsync": "rsync command",
+    "transmit:app": "node ./.front/transmit.js item=app",
+    "transmit:app:stage": "node ./.front/transmit.js item=app from=home to=stage",
+    "sync:app": "node ./.front/sync.js item=app",
+    "sync:app:stage": "node ./.front/sync.js item=app from=home to=stage"
+  },
+  "keywords": [
+    "javascript",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "better-sqlite3": "^5.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "frontier": "github:jdkdev/frontier",
+    "helmet": "^3.21.2",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.20.1",
+    "sqlite3": "^4.1.0"
+  },
+  "devDependencies": {
+    "frontier-backend": "github:jdkdev/frontier-backend"
+  }
+}
