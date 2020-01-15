@@ -1,12 +1,10 @@
 ### vars
-@livehost = https://auth.knight.works/api/v1
 @port = 3001
 @localhost = http://localhost:{{port}}/api/v1
 @contentType = application/json
 
 ### verify
 GET {{livehost}}/verify
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImVtYWlsIjoiam9yZGFuKzE4QGtuaWdodC53b3JrcyIsInNpdGUiOiJjbG91ZC5rbmlnaHQud29ya3MiLCJpYXQiOjE1NzI3MzAxMzUsImV4cCI6MTU3MjgxNjUzNX0.2E8c1ZUwyMvFnRHljSK4EZO0rVVuRaAlbE0-lF_Yv_w
 
 
 ###
@@ -24,7 +22,6 @@ content-type: {{contentType}}
 ###
 GET {{localhost}}/users
 content-type: {{contentType}}
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJqb3JkYW4rMTBAa25pZ2h0LndvcmtzIiwic2l0ZSI6ImxvY2FsaG9zdCIsImlhdCI6MTU3ODAzMDc4NiwiZXhwIjoxNTc4MTE3MTg2fQ.WAfj5krPMoJ3rfAp6ByxPC7iJ7mhH6zNvyglE6zQw8U
 
 ###
 {
@@ -68,6 +65,5 @@ POST {{localhost}}/logout
 content-type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJEJJQVVLRmJCakk2dGxHQVFxVTNHNnViQUNLS2tTZWkyUGNxRlZESE1acmU2VEJtekUwOGpTIiwiaWF0IjoxNTcyNzIzMzM2fQ.H94OYXkcQKEsaYP4m549g47ch5VfJA_1v2RtU-_JsMs"
 }
 ###

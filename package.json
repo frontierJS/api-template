@@ -1,7 +1,7 @@
 {
-  "name": "admin",
-  "version": "0.0.1",
-  "description": "",
+  "name": "@frontierjs/api-template",
+  "version": "0.0.0-beta.0",
+  "description": "FrontierJS: API Starter Template",
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon src/index.js",
@@ -26,18 +26,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@frontierjs/backend": "github:frontierjs/backend",
     "bcrypt": "^3.0.6",
     "better-sqlite3": "^5.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "frontier": "github:jdkdev/frontier",
     "helmet": "^3.21.2",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.20.1",
     "sqlite3": "^4.1.0"
   },
-  "devDependencies": {
-    "frontier-backend": "github:jdkdev/frontier-backend"
-  }
+  "devDependencies": {}
 }
