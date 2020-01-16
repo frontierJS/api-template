@@ -1,4 +1,4 @@
-const { env } = require('frontier')
+const { env } = require('@frontierjs/backend');
 const helmet = require('helmet')
 const cors = require('cors')
 

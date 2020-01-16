@@ -1,8 +1,8 @@
-const { env } = require('frontier')
+const { env } = require('@frontierjs/backend')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 // const db = require('./connection')
-const Model = require('frontier-backend/Model')
+const { Model } = require('@frontierjs/backend')
 
 let refreshTokens = []
 let REFRESH_TOKEN_SECRET = env.get('REFRESH_TOKEN_SECRET')

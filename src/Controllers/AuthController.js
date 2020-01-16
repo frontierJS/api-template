@@ -1,4 +1,4 @@
-const { env } = require('frontier')
+const { env } = require('@frontierjs/backend');
 const jwt = require('jsonwebtoken')
 
 let ACCESS_TOKEN_SECRET= env.get('ACCESS_TOKEN_SECRET')
