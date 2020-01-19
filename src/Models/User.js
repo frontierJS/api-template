@@ -60,7 +60,7 @@ class User extends Model {
 
     async auth(pw) {
         let sql = 'SELECT password FROM users where id = $id'
-        let { password } = (this.raw(sql, {id: this.id}) || {})
+        let { password } = (this._.raw(sql, {id: this.id}) || {})
         if (await bcrypt.compare(pw, password)) return 'success'
         else return null
     }
