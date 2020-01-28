@@ -29,12 +29,16 @@ class User extends Model {
     }
     static get fields() {
         return [
-            { name: 'id', type: 'integer', },
-            { name: 'email', type: 'string' },
-            { name: 'password', type: 'string' },
-            { name: 'site', type: 'string' },
-            { name: 'date_added', type: 'timestamp' },
-            { name: 'is_deleted', type: 'timestamp' }
+             {
+              name: 'id',
+              type: 'integer',
+              opts: 'NOT NULL PRIMARY KEY AUTOINCREMENT'
+            },
+            { name: 'email', type: 'text' },
+            { name: 'password', type: 'text' },
+            { name: 'site', type: 'text' },
+            { name: 'date_added', type: 'text' },
+            { name: 'is_deleted', type: 'text' }
         ]
     }
     static findByEmail(email) {
