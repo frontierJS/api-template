@@ -9,13 +9,12 @@ let REFRESH_TOKEN_SECRET = env.get('REFRESH_TOKEN_SECRET')
 let ACCESS_TOKEN_SECRET= env.get('ACCESS_TOKEN_SECRET')
 
 class User extends Model {
-    constructor({id = null, email = '', password = '', date_added = new Date().toJSON(), site = ''} = {}) {
+    constructor({id = null, email = '', password = '', date_added = new Date().toJSON()} = {}) {
         super()
         this.id = id
         this.email = email
         this.password = password
         this.date_added = date_added
-        this.site = site
         return this
     }
     static get useSoftDeletes() {
@@ -36,7 +35,6 @@ class User extends Model {
             },
             { name: 'email', type: 'text' },
             { name: 'password', type: 'text' },
-            { name: 'site', type: 'text' },
             { name: 'date_added', type: 'text' },
             { name: 'is_deleted', type: 'text' }
         ]
@@ -46,13 +44,13 @@ class User extends Model {
         return data ? new this(data) : null
 
     }
-    static async validateThenStore({email, password, site}) {
+    static async validateThenStore({email, password}) {
         //Need to validate data
         try {
             if (this.emailTaken(email)) return {error: 'Email Taken 1'}
 
             let hashedPassword = await bcrypt.hash(password, 10)
-            let result = this.create({email, password: hashedPassword, site})
+            let result = this.create({email, password: hashedPassword })
             return result
         } catch (e) {
             return console.log({e})
@@ -76,7 +74,7 @@ class User extends Model {
         return {accessToken, refreshToken}
     }
     generateAccessToken(token, expiration='24h') {
-        return jwt.sign({id: this.id, email: this.email, site: this.site}, token, { expiresIn: expiration })
+        return jwt.sign({id: this.id, email: this.email}, token, { expiresIn: expiration })
     }
 }
 

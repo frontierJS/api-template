@@ -14,7 +14,7 @@ const AuthController = {
         // console.log({req})
         //validate request
         try {
-            let user = { email, password, site } = req.body
+            let user = { email, password } = req.body
             res.status(201).send(await User.validateThenStore(user))
         } catch (e) {
             console.log('error', e)
