@@ -3,14 +3,7 @@
 @localhost = http://localhost:{{port}}/api/v1
 @contentType = application/json
 
-### verify
-GET {{livehost}}/verify
-
-
 ###
-
-###
-POST {{livehost}}/register
 # POST {{localhost}}/register
 content-type: {{contentType}}
 
@@ -19,51 +12,3 @@ content-type: {{contentType}}
     "password": "test",
     "site": "admin.knight.works"
 }
-###
-GET {{localhost}}/users
-content-type: {{contentType}}
-
-###
-{
-    "email": "jordan+63@knight.works",
-    "password": "test",
-    "site": "admin.knight.works"
-}
-###
-//GET /users
-GET {{localhost}}/users
-####
-
-POST {{localhost}}/login
-content-type: {{contentType}}
-
-{
-    "email": "jordan+14@knight.works",
-    "password": "test"
-}
-
-###
-POST {{livehost}}/login
-content-type: application/json
-
-{
-    "email": "jordan+10@knight.works",
-    "password": "test"
-}
-
-###
-### Refresh
-POST {{localhost}}/refresh
-content-type: application/json
-
-{
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJEJJQVVLRmJCakk2dGxHQVFxVTNHNnViQUNLS2tTZWkyUGNxRlZESE1acmU2VEJtekUwOGpTIiwiaWF0IjoxNTcyNzIzMzM2fQ.H94OYXkcQKEsaYP4m549g47ch5VfJA_1v2RtU-_JsMs"
-}
-
-### Refresh
-POST {{localhost}}/logout
-content-type: application/json
-
-{
-}
-###
