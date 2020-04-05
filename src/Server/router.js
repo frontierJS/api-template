@@ -7,15 +7,25 @@ router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.json())
 
 router.use('/', (req, res, next) => {
-    // console.log({body: req.body})
-    next()
+  // console.log({body: req.body})
+  next()
 })
 
-let UserController = require('$c/UserController')
-let AuthController = require('$c/AuthController')
+import AuthController from '$c/AuthController'
 
-router.get('/users', AuthController.authenticateTokenMiddleware, UserController.index)
-router.get('/users/all', AuthController.authenticateTokenMiddleware, UserController.all)
+import UserController from '$c/UserController'
+
+router.get(
+  '/users',
+  AuthController.authenticateTokenMiddleware,
+  UserController.index
+)
+router.get('/users/free', UserController.index)
+router.get(
+  '/users/all',
+  AuthController.authenticateTokenMiddleware,
+  UserController.all
+)
 router.post('/users', UserController.store)
 router.delete('/users/:id', UserController.destroy)
 router.patch('/users/:id/restore', UserController.restore)
@@ -23,7 +33,11 @@ router.patch('/users/:id/restore', UserController.restore)
 router.post('/register', AuthController.register)
 router.post('/login', AuthController.login)
 router.post('/refresh', AuthController.refresh)
-router.get('/verify', AuthController.authenticateTokenMiddleware, AuthController.verify)
+router.get(
+  '/verify',
+  AuthController.authenticateTokenMiddleware,
+  AuthController.verify
+)
 router.post('/logout', AuthController.logout)
 
-module.exports = router
+export default router

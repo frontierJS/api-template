@@ -37,4 +37,4 @@ class Example extends Model {
     }
 }
 
-module.exports = Example
+export default = Example

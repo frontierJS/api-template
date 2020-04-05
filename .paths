@@ -1,3 +1,0 @@
-$c = /src/Controllers
-$m = /src/Models
-$frontier = /node_modules/@frontierjs/backend

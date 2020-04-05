@@ -1,11 +1,11 @@
-require('@frontierjs/toolbelt/lib/require')
+const { env } = require('@frontierjs/backend')
 
-const { env } = require('@frontierjs/backend');
+let port = env.get('PORT')
 
-let port = env.get('PORT') //Frontier default is 9999
+import server from './Server/server.js'
 
-let server = require('./Server/server')
-
-server.listen(port, () => console.log(`
+server.listen(port, () =>
+  console.log(`
   Server listening on port ${port}!
-`))
+`)
+)
