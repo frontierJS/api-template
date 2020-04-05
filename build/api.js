@@ -56,7 +56,7 @@ class User extends Model {
       let result = this.create({ email, password: hashedPassword });
       return result
     } catch (e) {
-      return void 0
+      return console.log({ e })
     }
   }
   static emailTaken(email) {
@@ -82,6 +82,7 @@ class User extends Model {
 }
 
 const { env: env$1 } = require('@frontierjs/backend');
+
 const jwt$1 = require('jsonwebtoken');
 
 let ACCESS_TOKEN_SECRET$1 = env$1.get('ACCESS_TOKEN_SECRET');
@@ -89,6 +90,60 @@ let REFRESH_TOKEN_SECRET$1 = env$1.get('REFRESH_TOKEN_SECRET');
 
 //fix
 let refreshTokens = [
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJEJJQVVLRmJCakk2dGxHQVFxVTNHNnViQUNLS2tTZWkyUGNxRlZESE1acmU2VEJtekUwOGpTIiwiaWF0IjoxNTcyNzIzMzM2fQ.H94OYXkcQKEsaYP4m549g47ch5VfJA_1v2RtU-_JsMs',
+];
+const UserController = {
+  index(req, res) {
+    let users = User._getAll();
+    return res.json(users)
+  },
+  all(req, res) {
+    let users = User.getAll({ withDeleted: true })[0]._._getAll({
+      withDeleted: true,
+    });
+    return res.json(users)
+  },
+  async store(req, res) {
+    let user = ({ email, password } = req.body);
+    res.status(201).send(await User.validateThenStore(user));
+  },
+  destroy(req, res) {
+    User.delete(parseInt(req.params.id));
+
+    return res.json({ ok: true })
+  },
+  restore({ params: { id } }, res) {
+    let user = User.restore(parseInt(id));
+    console.log({ user });
+    res.json(user);
+  },
+  logout(req, res) {
+    //reqork this into DB
+    refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
+    res.sendStatus(204);
+  },
+  // Middleware Testing
+  authenticateTokenMiddleware(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) return res.sendStatus(401)
+
+    jwt$1.verify(token, ACCESS_TOKEN_SECRET$1, (err, user) => {
+      if (err) return res.sendStatus(403)
+      req.user = user;
+      next();
+    });
+  },
+};
+
+const { env: env$2 } = require('@frontierjs/backend');
+const jwt$2 = require('jsonwebtoken');
+
+let ACCESS_TOKEN_SECRET$2 = env$2.get('ACCESS_TOKEN_SECRET');
+let REFRESH_TOKEN_SECRET$2 = env$2.get('REFRESH_TOKEN_SECRET');
+
+//fix
+let refreshTokens$1 = [
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJEJJQVVLRmJCakk2dGxHQVFxVTNHNnViQUNLS2tTZWkyUGNxRlZESE1acmU2VEJtekUwOGpTIiwiaWF0IjoxNTcyNzIzMzM2fQ.H94OYXkcQKEsaYP4m549g47ch5VfJA_1v2RtU-_JsMs'
 ];
 const AuthController = {
@@ -99,6 +154,7 @@ const AuthController = {
       let user = ({ email, password } = req.body);
       res.status(201).send(await User.validateThenStore(user));
     } catch (e) {
+      console.log('error', e);
       res.status(500).send();
     }
   },
@@ -109,12 +165,13 @@ const AuthController = {
     try {
       if (await user.auth(password)) {
         let { accessToken, refreshToken } = await user.login();
-        refreshTokens.push(refreshToken);
+        refreshTokens$1.push(refreshToken);
         res.json({ accessToken: accessToken, refreshToken: refreshToken, user });
       } else {
         return res.sendStatus(401)
       }
     } catch (e) {
+      console.log(e);
       return res.status(401).json({ message: 'You are not registered!' })
     }
   },
@@ -122,9 +179,9 @@ const AuthController = {
   refresh(req, res) {
     const refreshToken = req.body.token;
     if (refreshToken == null) return res.sendStatus(401)
-    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+    if (!refreshTokens$1.includes(refreshToken)) return res.sendStatus(403)
 
-    jwt$1.verify(refreshToken, REFRESH_TOKEN_SECRET$1, async (err, userData) => {
+    jwt$2.verify(refreshToken, REFRESH_TOKEN_SECRET$2, async (err, userData) => {
       if (err) return res.sendStatus(403)
       let user = User.find(userData.id);
       let { accessToken } = await user.login();
@@ -138,7 +195,7 @@ const AuthController = {
 
   logout(req, res) {
     //reqork this into DB
-    refreshTokens = refreshTokens.filter(token => token !== req.body.token);
+    refreshTokens$1 = refreshTokens$1.filter(token => token !== req.body.token);
     res.sendStatus(204);
   },
   // Middleware Testing
@@ -147,7 +204,7 @@ const AuthController = {
     const token = authHeader && authHeader.split(' ')[1];
     if (token == null) return res.status(401).send({ error: 'denied' })
 
-    jwt$1.verify(token, ACCESS_TOKEN_SECRET$1, (err, user) => {
+    jwt$2.verify(token, ACCESS_TOKEN_SECRET$2, (err, user) => {
       if (err) return res.status(403).send({ error: 'unauthorized' })
       req.user = user;
       next();
@@ -155,18 +212,36 @@ const AuthController = {
   }
 };
 
-const { env: env$2 } = require('@frontierjs/backend');
+let express = require('express');
+let router = express.Router();
 
-const jwt$2 = require('jsonwebtoken');
+const bodyParser = require('body-parser');
+router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.json());
 
-let ACCESS_TOKEN_SECRET$2 = env$2.get('ACCESS_TOKEN_SECRET');
-let REFRESH_TOKEN_SECRET$2 = env$2.get('REFRESH_TOKEN_SECRET');
+router.use('/', (req, res, next) => {
+  // console.log({body: req.body})
+  next();
+});
+
+router.get(
+  '/',
+  // AuthController.authenticateTokenMiddleware,
+  UserController.index
+);
+
+const { env: env$3 } = require('@frontierjs/backend');
+
+const jwt$3 = require('jsonwebtoken');
+
+let ACCESS_TOKEN_SECRET$3 = env$3.get('ACCESS_TOKEN_SECRET');
+let REFRESH_TOKEN_SECRET$3 = env$3.get('REFRESH_TOKEN_SECRET');
 
 //fix
-let refreshTokens$1 = [
+let refreshTokens$2 = [
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJEJJQVVLRmJCakk2dGxHQVFxVTNHNnViQUNLS2tTZWkyUGNxRlZESE1acmU2VEJtekUwOGpTIiwiaWF0IjoxNTcyNzIzMzM2fQ.H94OYXkcQKEsaYP4m549g47ch5VfJA_1v2RtU-_JsMs'
 ];
-const UserController = {
+const UserController$1 = {
   index(req, res) {
     let users = User._getAll();
     return res.json(users)
@@ -188,11 +263,12 @@ const UserController = {
   },
   restore({ params: { id } }, res) {
     let user = User.restore(parseInt(id));
+    console.log({ user });
     res.json(user);
   },
   logout(req, res) {
     //reqork this into DB
-    refreshTokens$1 = refreshTokens$1.filter(token => token !== req.body.token);
+    refreshTokens$2 = refreshTokens$2.filter(token => token !== req.body.token);
     res.sendStatus(204);
   },
   // Middleware Testing
@@ -201,7 +277,7 @@ const UserController = {
     const token = authHeader && authHeader.split(' ')[1];
     if (token == null) return res.sendStatus(401)
 
-    jwt$2.verify(token, ACCESS_TOKEN_SECRET$2, (err, user) => {
+    jwt$3.verify(token, ACCESS_TOKEN_SECRET$3, (err, user) => {
       if (err) return res.sendStatus(403)
       req.user = user;
       next();
@@ -210,44 +286,46 @@ const UserController = {
 };
 
 //register, login, logout, refreshtokens, verify
-let express = require('express');
-let router = express.Router();
+let express$1 = require('express');
+let router$1 = express$1.Router();
 
-const bodyParser = require('body-parser');
-router.use(bodyParser.urlencoded({ extended: false }));
-router.use(bodyParser.json());
+const bodyParser$1 = require('body-parser');
+router$1.use(bodyParser$1.urlencoded({ extended: false }));
+router$1.use(bodyParser$1.json());
 
-router.use('/', (req, res, next) => {
+router$1.use('/', (req, res, next) => {
   // console.log({body: req.body})
   next();
 });
 
-router.get(
+router$1.use('/template', router);
+
+router$1.get(
   '/users',
   AuthController.authenticateTokenMiddleware,
-  UserController.index
+  UserController$1.index
 );
-router.get('/users/free', UserController.index);
-router.get(
+router$1.get('/users/free', UserController$1.index);
+router$1.get(
   '/users/all',
   AuthController.authenticateTokenMiddleware,
-  UserController.all
+  UserController$1.all
 );
-router.post('/users', UserController.store);
-router.delete('/users/:id', UserController.destroy);
-router.patch('/users/:id/restore', UserController.restore);
+router$1.post('/users', UserController$1.store);
+router$1.delete('/users/:id', UserController$1.destroy);
+router$1.patch('/users/:id/restore', UserController$1.restore);
 
-router.post('/register', AuthController.register);
-router.post('/login', AuthController.login);
-router.post('/refresh', AuthController.refresh);
-router.get(
+router$1.post('/register', AuthController.register);
+router$1.post('/login', AuthController.login);
+router$1.post('/refresh', AuthController.refresh);
+router$1.get(
   '/verify',
   AuthController.authenticateTokenMiddleware,
   AuthController.verify
 );
-router.post('/logout', AuthController.logout);
+router$1.post('/logout', AuthController.logout);
 
-const { env: env$3 } = require('@frontierjs/backend');
+const { env: env$4 } = require('@frontierjs/backend');
 const helmet = require('helmet');
 const cors = require('cors');
 
@@ -256,12 +334,14 @@ let server = require('express')();
 server.use(cors());
 server.use(helmet());
 server.use(helmet.hidePoweredBy({ setTo: 'PHP 3.3.0' }));
-server.use('/api/v1', router);
+server.use('/api/v1', router$1);
 
-const { env: env$4 } = require('@frontierjs/backend');
+const { env: env$5 } = require('@frontierjs/backend');
 
-let port = env$4.get('PORT');
+let port = env$5.get('PORT');
 
 server.listen(port, () =>
-  void 0
+  console.log(`
+  Server listening on port ${port}!
+`)
 );

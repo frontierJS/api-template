@@ -1,6 +1,7 @@
 //register, login, logout, refreshtokens, verify
 let express = require('express')
 let router = express.Router()
+import TemplateRouter from './routes/TemplateRouter.js'
 
 const bodyParser = require('body-parser')
 router.use(bodyParser.urlencoded({ extended: false }))
@@ -12,8 +13,9 @@ router.use('/', (req, res, next) => {
 })
 
 import AuthController from '$c/AuthController'
-
 import UserController from '$c/UserController'
+
+router.use('/template', TemplateRouter)
 
 router.get(
   '/users',
