@@ -14,7 +14,7 @@ export default {
   input: 'src/index.js',
   output: {
     file: 'build/api.js',
-    format: 'cjs'
+    format: 'cjs',
   },
   external: builtins,
   plugins: [
@@ -22,7 +22,7 @@ export default {
       entries: [
         {
           find: '$c',
-          replacement: path.resolve(projectRoot, 'src/Controllers')
+          replacement: path.resolve(projectRoot, 'src/Controllers'),
         },
         { find: '$m', replacement: path.resolve(projectRoot, 'src/Models') },
         {
@@ -30,13 +30,13 @@ export default {
           replacement: path.resolve(
             projectRoot,
             'node_modules/@frontierjs/backend'
-          )
-        }
-      ]
+          ),
+        },
+      ],
     }),
     copy({
       targets: [{ src: ['package.json', 'package-lock.json'], dest: 'build' }],
-      copyOnce: true
+      copyOnce: true,
     }),
     // resolve(),
     // In dev mode, call `npm run watch` once
@@ -50,8 +50,8 @@ export default {
 
     // If we're building for production (npm run build
     // instead of npm run dev), minify
-    production && strip()
-  ]
+    production && strip(),
+  ],
 }
 
 function serve() {
@@ -64,10 +64,10 @@ function serve() {
 
         require('child_process').spawn('npm', ['run', 'watch', '--'], {
           stdio: ['ignore', 'inherit', 'inherit'],
-          shell: true
+          shell: true,
         })
       }
-    }
+    },
   }
 }
 
@@ -79,11 +79,11 @@ function refreshBrowser() {
       if (!started) {
         started = true
 
-        require('child_process').spawn('npm', ['run', 'broswer:reload'], {
+        require('child_process').spawn('npm', ['run', 'browser:reload'], {
           stdio: ['ignore', 'inherit', 'inherit'],
-          shell: true
+          shell: true,
         })
       }
-    }
+    },
   }
 }
