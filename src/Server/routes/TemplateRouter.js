@@ -1,7 +1,7 @@
-let express = require('express')
+import express from 'express'
 let router = express.Router()
 
-const bodyParser = require('body-parser')
+import bodyParser from 'body-parser'
 router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.json())
 

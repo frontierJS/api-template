@@ -1,15 +1,11 @@
-const { env } = require('@frontierjs/backend')
+import { env } from '@frontierjs/backend'
 
-const jwt = require('jsonwebtoken')
+import jwt from 'jsonwebtoken'
 
 let ACCESS_TOKEN_SECRET = env.get('ACCESS_TOKEN_SECRET')
 let REFRESH_TOKEN_SECRET = env.get('REFRESH_TOKEN_SECRET')
 import User from '$m/User'
 
-//fix
-let refreshTokens = [
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJEJJQVVLRmJCakk2dGxHQVFxVTNHNnViQUNLS2tTZWkyUGNxRlZESE1acmU2VEJtekUwOGpTIiwiaWF0IjoxNTcyNzIzMzM2fQ.H94OYXkcQKEsaYP4m549g47ch5VfJA_1v2RtU-_JsMs'
-]
 const UserController = {
   index(req, res) {
     let users = User._getAll()
@@ -17,7 +13,7 @@ const UserController = {
   },
   all(req, res) {
     let users = User.getAll({ withDeleted: true })[0]._._getAll({
-      withDeleted: true
+      withDeleted: true,
     })
     return res.json(users)
   },
@@ -37,7 +33,7 @@ const UserController = {
   },
   logout(req, res) {
     //reqork this into DB
-    refreshTokens = refreshTokens.filter(token => token !== req.body.token)
+    refreshTokens = refreshTokens.filter((token) => token !== req.body.token)
     res.sendStatus(204)
   },
   // Middleware Testing
@@ -51,6 +47,6 @@ const UserController = {
       req.user = user
       next()
     })
-  }
+  },
 }
 export default UserController

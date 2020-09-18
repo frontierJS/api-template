@@ -1,15 +1,10 @@
-const { env } = require('@frontierjs/backend')
-
-const jwt = require('jsonwebtoken')
+import { env } from '@frontierjs/backend'
+import jwt from 'jsonwebtoken'
 
 let ACCESS_TOKEN_SECRET = env.get('ACCESS_TOKEN_SECRET')
 let REFRESH_TOKEN_SECRET = env.get('REFRESH_TOKEN_SECRET')
 import User from '$m/User'
 
-//fix
-let refreshTokens = [
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJEJJQVVLRmJCakk2dGxHQVFxVTNHNnViQUNLS2tTZWkyUGNxRlZESE1acmU2VEJtekUwOGpTIiwiaWF0IjoxNTcyNzIzMzM2fQ.H94OYXkcQKEsaYP4m549g47ch5VfJA_1v2RtU-_JsMs',
-]
 const UserController = {
   index(req, res) {
     let users = User._getAll()

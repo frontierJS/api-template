@@ -2,6 +2,7 @@
   "name": "@frontierjs/api-template",
   "version": "0.0.0-beta.0",
   "description": "FrontierJS: API Starter Template",
+  "type": "module",
   "main": "build/api.js",
   "scripts": {
     "start": "node build/api.js",
@@ -39,6 +40,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "helmet": "^3.21.2",
+    "indicative": "^7.4.4",
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {

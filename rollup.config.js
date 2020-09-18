@@ -14,7 +14,7 @@ export default {
   input: 'src/index.js',
   output: {
     file: 'build/api.js',
-    format: 'cjs',
+    format: 'es',
   },
   external: builtins,
   plugins: [

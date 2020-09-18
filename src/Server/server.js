@@ -1,8 +1,9 @@
-const { env } = require('@frontierjs/backend')
-const helmet = require('helmet')
-const cors = require('cors')
+import { env } from '@frontierjs/backend'
+import helmet from 'helmet'
+import cors from 'cors'
 
-let server = require('express')()
+import express from 'express'
+let server = express()
 import router from './router.js'
 
 server.use(cors())

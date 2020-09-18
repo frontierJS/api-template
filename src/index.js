@@ -1,4 +1,4 @@
-const { env } = require('@frontierjs/backend')
+import { env } from '@frontierjs/backend'
 
 let port = env.get('PORT')
 

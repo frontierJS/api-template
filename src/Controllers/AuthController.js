@@ -1,25 +1,30 @@
-const { env } = require('@frontierjs/backend')
-const jwt = require('jsonwebtoken')
+import { env } from '@frontierjs/backend'
+import vld from 'indicative/validator.js'
+import jwt from 'jsonwebtoken'
 
-let ACCESS_TOKEN_SECRET = env.get('ACCESS_TOKEN_SECRET')
-let REFRESH_TOKEN_SECRET = env.get('REFRESH_TOKEN_SECRET')
+console.log(vld)
+const PEPPER = env.get('PEPPER')
+const ACCESS_TOKEN_SECRET = env.get('ACCESS_TOKEN_SECRET')
+const REFRESH_TOKEN_SECRET = env.get('REFRESH_TOKEN_SECRET')
+
 import User from '$m/User'
 
-//fix
-let refreshTokens = [
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJEJJQVVLRmJCakk2dGxHQVFxVTNHNnViQUNLS2tTZWkyUGNxRlZESE1acmU2VEJtekUwOGpTIiwiaWF0IjoxNTcyNzIzMzM2fQ.H94OYXkcQKEsaYP4m549g47ch5VfJA_1v2RtU-_JsMs'
-]
+function til(p) {
+  return p.then((res) => [null, res]).catch((e) => [e])
+}
+
 const AuthController = {
   async register(req, res) {
-    // console.log({req})
-    //validate request
-    try {
-      let user = ({ email, password } = req.body)
-      res.status(201).send(await User.validateThenStore(user))
-    } catch (e) {
-      console.log('error', e)
-      res.status(500).send()
-    }
+    let [err, data] = await til(
+      vld.validate(req.body, {
+        email: User.rules('email'),
+        password: User.rules('password'),
+      })
+    )
+
+    if (err) return res.sendStatus(401)
+
+    res.status(201).send(await User.validateThenStore(user))
   },
   async login({ body: { email, password } }, res) {
     let user = User.findByEmail(email)
@@ -58,7 +63,7 @@ const AuthController = {
 
   logout(req, res) {
     //reqork this into DB
-    refreshTokens = refreshTokens.filter(token => token !== req.body.token)
+    refreshTokens = refreshTokens.filter((token) => token !== req.body.token)
     res.sendStatus(204)
   },
   // Middleware Testing
@@ -72,6 +77,6 @@ const AuthController = {
       req.user = user
       next()
     })
-  }
+  },
 }
 export default AuthController

@@ -1,9 +1,9 @@
 //register, login, logout, refreshtokens, verify
-let express = require('express')
+import express from 'express'
 let router = express.Router()
 // import TemplateRouter from './routes/TemplateRouter.js'
 
-const bodyParser = require('body-parser')
+import bodyParser from 'body-parser'
 router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.json())
 

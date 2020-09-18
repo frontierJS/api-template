@@ -1,5 +1,4 @@
-const { env } = require('@frontierjs/backend')
-const { Model } = require('@frontierjs/backend')
+import { Model, env } from '@frontierjs/backend'
 
 class Example extends Model {
     constructor({id = null, email = ''}) {
